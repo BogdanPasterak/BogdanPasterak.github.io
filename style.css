@@ -11,8 +11,8 @@ header, footer {
     padding: 20px;
 }
 
-h1 {
-    font-size: 2.5em;
+h1, .sidebar h1 {
+    font-size: clamp(1.5em, 5vw, 2.5em);
     margin-bottom: 20px;
 }
 
@@ -53,6 +53,7 @@ h1 {
         flex-direction: row;
         width: 100%;
         max-width: 1200px;
+        align-items: stretch;
     }
     
     .main-section {
@@ -61,43 +62,70 @@ h1 {
         aspect-ratio: 7 / 8;
         background-color: #f0f0f0;
         border: 2px solid #333;
+        order: 1; /* Główna sekcja po lewej */
     }
 
     .sidebar {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
-        padding-left: 20px;
+        padding-left: 40px;
         text-align: center;
+        order: 2; /* Sidebar po prawej */
+        min-width: 300px;
     }
-    
-    header, footer {
+
+    header {
+        display: none; /* Ukryj nagłówek w tym układzie */
+    }
+
+    .sidebar h1 {
+        margin-bottom: 30px;
+        margin-top: 0;
+        font-size: 2.5em;
+    }
+
+    .buttons-container {
+        margin-top: 0;
+        justify-content: center;
+    }
+
+    footer {
         flex-grow: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-    
-    header {
-        order: 2; /* Przenosi nagłówek na prawą stronę */
-    }
-    
-    .main-section {
-        order: 1; /* Główna sekcja po lewej */
-    }
-    
-    .sidebar {
         order: 3;
     }
+}
 
-    /* Zapewnienie, że przyciski i reszta zawartości bocznej są na górze */
-    .buttons-container {
-        margin-top: 0;
+/* Domyślnie oba widoczne */
+#pionowy, #poziomy {
+    display: block;
+    height: auto;
+}
+
+/* Landscape: ukryj #pionowy */
+@media (orientation: landscape) {
+    #pionowy {
+        display: none;
+        height: 0;
     }
+    #poziomy {
+        display: block;
+        height: auto;
+    }
+}
 
-    /* Dodatkowe wyrównanie elementów bocznych */
-    h1, .buttons-container, footer {
-        margin: auto; /* Domyślne marginesy */
+/* Portrait: ukryj #poziomy */
+@media (orientation: portrait) {
+    #poziomy {
+        display: none;
+        height: 0;
+    }
+    #pionowy {
+        display: block;
+        height: auto;
     }
 }
