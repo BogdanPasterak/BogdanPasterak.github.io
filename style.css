@@ -6,14 +6,19 @@ body {
     min-height: 100vh;
 }
 
-header, footer {
+header {
     text-align: center;
-    padding: 20px;
+    padding: 0 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
 }
 
 h1, .sidebar h1 {
     font-size: clamp(1.5em, 5vw, 2.5em);
-    margin-bottom: 20px;
+    margin: 10px 10px 0;
 }
 
 /* Układ dla orientacji pionowej (portrait) */
@@ -25,16 +30,32 @@ h1, .sidebar h1 {
     padding: 20px;
 }
 
-.main-section {
+#board {
     width: 70vmin;
     max-width: 80vh;
     aspect-ratio: 7 / 8;
-    background-color: #f0f0f0;
-    border: 2px solid #333;
+    display: grid;
+    /* grid-template-columns i grid-template-rows będą ustawione przez JS */
+    border: 1px solid #333;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    background-image: url('Uklad.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.main-section img#temp {
-    width: 100%;
+.cell {
+    border: 1px solid #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    color: #555;
+    background-color: white;
+}
+
+#board img#temp {
     height: 100%;
     object-fit: contain;
     display: block;
@@ -63,7 +84,7 @@ h1, .sidebar h1 {
         align-items: stretch;
     }
     
-    .main-section {
+    #board {
         width: auto;
         height: 80vh;
         aspect-ratio: 7 / 8;
