@@ -2,6 +2,12 @@ import Shapes from "./shapes.js";
 
 // urzywane stale
 const board = document.getElementById('board');
+const modal = document.getElementById('modal');
+const msg = document.getElementById('modal-message');
+const yesBtn = document.getElementById('modal-yes');
+const noBtn = document.getElementById('modal-no');
+
+
 
 
 // zmienne
@@ -142,6 +148,32 @@ function setYear(nr) {
     document.querySelectorAll('.year')[nr - 2025].classList.add("today");
 }
 
+// Modals
+function showModal(message, callback) {
+    msg.textContent = message;
+    modal.classList.remove('modal-hidden');
+    board.classList.add('modal-blur');
+
+    yesBtn.onclick = () => {
+        modal.classList.add('modal-hidden');
+        board.classList.remove('modal-blur');
+        callback(true);
+    };
+    noBtn.onclick = () => {
+        modal.classList.add('modal-hidden');
+        board.classList.remove('modal-blur');
+        callback(false);
+    };
+}
+
+// Przykład użycia:
+// showModal("Czy chcesz kontynuować?", function(result) {
+//     if(result) {
+//         console.log("Wybrano YES");
+//     } else {
+//         console.log("Wybrano NO");
+//     }
+// });
 
 
 // START
@@ -149,3 +181,15 @@ generatePlansza();
 
 window.addEventListener('DOMContentLoaded', resizeBoard);
 window.addEventListener('resize', resizeBoard);
+
+document.querySelector('.buttons-container button:nth-child(1)').onclick = function() {
+    showModal("Czy chcesz wykonać akcję dla Przycisku 1?", function(result) {
+        if(result) {
+            console.log("Użytkownik wybrał YES dla Przycisku 1");
+            // tutaj możesz dodać własną akcję
+        } else {
+            console.log("Użytkownik wybrał NO dla Przycisku 1");
+            // tutaj możesz dodać własną akcję
+        }
+    });
+};
