@@ -149,22 +149,50 @@ function setYear(nr) {
 }
 
 // Modals
-function showModal(message, callback) {
+function showModal(message, callback, singleButton = false) {
     msg.textContent = message;
     modal.classList.remove('modal-hidden');
     board.classList.add('modal-blur');
 
-    yesBtn.onclick = () => {
-        modal.classList.add('modal-hidden');
-        board.classList.remove('modal-blur');
-        callback(true);
-    };
-    noBtn.onclick = () => {
-        modal.classList.add('modal-hidden');
-        board.classList.remove('modal-blur');
-        callback(false);
-    };
+    if (singleButton) {
+        yesBtn.style.display = 'inline-block';
+        noBtn.style.display = 'none';
+        yesBtn.textContent = 'OK';
+        yesBtn.onclick = () => {
+            modal.classList.add('modal-hidden');
+            board.classList.remove('modal-blur');
+            callback(true);
+        };
+    } else {
+        yesBtn.style.display = 'inline-block';
+        noBtn.style.display = 'inline-block';
+        yesBtn.textContent = 'Yes';
+        noBtn.textContent = 'No';
+        yesBtn.onclick = () => {
+            modal.classList.add('modal-hidden');
+            board.classList.remove('modal-blur');
+            callback(true);
+        };
+        noBtn.onclick = () => {
+            modal.classList.add('modal-hidden');
+            board.classList.remove('modal-blur');
+            callback(false);
+        };
+    }
 }
+
+// Przycisk test
+document.getElementById('test').onclick = function() {
+    showModal("Czy chcesz wykonać akcję dla Przycisku 1?", function(result) {
+        if(result) {
+            console.log("Użytkownik wybrał YES dla Przycisku 1");
+            // tutaj możesz dodać własną akcję
+        } else {
+            console.log("Użytkownik wybrał NO dla Przycisku 1");
+            // tutaj możesz dodać własną akcję
+        }
+    });
+};
 
 // Przykład użycia:
 // showModal("Czy chcesz kontynuować?", function(result) {
@@ -182,14 +210,3 @@ generatePlansza();
 window.addEventListener('DOMContentLoaded', resizeBoard);
 window.addEventListener('resize', resizeBoard);
 
-document.querySelector('.buttons-container button:nth-child(1)').onclick = function() {
-    showModal("Czy chcesz wykonać akcję dla Przycisku 1?", function(result) {
-        if(result) {
-            console.log("Użytkownik wybrał YES dla Przycisku 1");
-            // tutaj możesz dodać własną akcję
-        } else {
-            console.log("Użytkownik wybrał NO dla Przycisku 1");
-            // tutaj możesz dodać własną akcję
-        }
-    });
-};
