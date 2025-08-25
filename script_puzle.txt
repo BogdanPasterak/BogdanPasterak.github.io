@@ -31,7 +31,7 @@ boardContainer.style.width = `${numCols * cellSize}px`;
 boardContainer.style.height = `${(numRows + 1) * cellSize}px`;
 
 
-// 1. Generowanie WSZYSTKICH komórek planszy najpierw
+// 1. Generowanie WSZYSTKICH komórek planszy
 function generatePlansza() {
     let i = 0;
 
@@ -117,13 +117,13 @@ function setDay(nr) {
     document.querySelectorAll(".day")[--nr].classList.add("today");
 }
 
-// popraw dzien
+// popraw miesiac
 function setMonth(nr) {
     document.querySelector(".today.month").classList.remove("today");
     document.querySelectorAll(".month")[nr].classList.add("today");
 }
 
-// popraw dzien
+// popraw rok
 function setYear(nr) {
     document.querySelector(".today.year").classList.remove("today");
     document.querySelectorAll('.year')[nr - 2025].classList.add("today");
