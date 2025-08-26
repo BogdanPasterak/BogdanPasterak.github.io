@@ -345,13 +345,27 @@ document.getElementById('test').onclick = function() {
             nazwyShapes.forEach(nazwa => zmazShape(nazwa));
             document.getElementById("komunikat").innerText = "Today's Arrangement Exists!"
             console.log(ustawione);
-            
+            flashTransmisja();
         } else {
             console.log("Użytkownik wybrał NO dla Przycisku 1");
             // tutaj możesz dodać własną akcję
         }
     });
 };
+
+function flashTransmisja() {
+    const zaznaczanie = document.getElementById('zaznaczanie');
+    const komunikat = document.getElementById('komunikat');
+    zaznaczanie.classList.add('flash');
+    komunikat.classList.add('flash');
+    setTimeout(() => {
+        zaznaczanie.classList.remove('flash');
+        komunikat.classList.remove('flash');
+    }, 3000);
+}
+
+// Przykład użycia:
+// flashTransmisja();
 
 // Przykład użycia:
 // showModal("Czy chcesz kontynuować?", function(result) {

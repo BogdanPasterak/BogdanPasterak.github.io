@@ -73,6 +73,37 @@ h1, h2 {
     position: relative;
 }
 
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 40px;
+    text-align: center;
+    min-width: 300px;
+    order: 2;
+}
+
+#zaznaczanie {
+    display: inline-block;
+    margin: 10px;
+    padding: 0 20px 5px;
+    align-self: center;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#zaznaczanie.flash {
+    animation: zaznaczanie-flash 3s linear;
+}
+
+#komunikat.flash {
+    color: black ;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    animation: komunikat-flash 3s linear;
+}
+
 .cell {
     border: 1px solid #444;
     display: flex;
@@ -149,17 +180,6 @@ h1, h2 {
         background-color: #f0f0f0;
         border: 2px solid #333;
         order: 1; /* Główna sekcja po lewej */
-    }
-
-    .sidebar {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        padding-left: 40px;
-        text-align: center;
-        order: 2; /* Sidebar po prawej */
-        min-width: 300px;
     }
 
     header {
@@ -280,4 +300,18 @@ h1, h2 {
     color: #888;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+@keyframes zaznaczanie-flash {
+    0%   { background-color: rgba(255,255,255,0.5); }
+    33%  { background-color: rgb(209, 31, 75); }
+    66%  { background-color: rgb(209, 31, 75); }
+    100% { background-color: rgba(255,255,255,0.5); }
+}
+
+@keyframes komunikat-flash {
+    0%   { color: inherit; }
+    33%  { color: white; }
+    66%  { color: white; }
+    100% { color: inherit; }
 }
