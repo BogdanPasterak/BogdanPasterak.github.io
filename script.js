@@ -7,11 +7,10 @@ const msg = document.getElementById('modal-message');
 const yesBtn = document.getElementById('modal-yes');
 const noBtn = document.getElementById('modal-no');
 
-
-
-
 // zmienne
 let nazwyShapes = [];
+let ustawione = Array(0);
+
 // texty na polach
 const opis = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "2025",
@@ -74,20 +73,18 @@ function generatePlansza() {
     }
 
     Shapes.forEach(e => nazwyShapes.push(e.name));
+    setToday();
+}
 
-    // ustawienie dzisiaj
+// 2. Obsluga ustawiania dnia na planszy
+// ustawienie dzisiaj
+function setToday() {
     const dzis = new Date();
     setDay(dzis.getDate());
     setMonth(dzis.getMonth());
     setYear(dzis.getFullYear());
     sprawdzDate();
-
-    // test nowej figury
-    // const testShape = { index: 1, konfig: 0, nazwa: 'r' };
-    // rysujShape(testShape , 2);
 }
-
-// 2. Obsluga ustawiania dnia na planszy
 
 // pobierz dzien tygodnia
 function getDayOfWeek(year, month, day) {
@@ -148,7 +145,165 @@ function setYear(nr) {
     document.querySelectorAll('.year')[nr - 2025].classList.add("today");
 }
 
-// Modals
+// 3. Testowanie Ukladu
+
+function zmazShape(nazwa) {
+    board.querySelectorAll(`.${nazwa}`).forEach(klocek =>
+        klocek.classList.remove(nazwa)
+    );
+}
+
+// rysowanie figury
+function rysujShape(obiekt, pole) {
+    Shapes[obiekt.index].rotations[obiekt.konfig].forEach(kostka =>
+        document.getElementById((pole + kostka[1] + kostka[0] * 7)).classList.add(obiekt.nazwa)
+    );
+}
+
+// testuj pole
+function testujPole(nr) {
+    const color = window.getComputedStyle(document.getElementById(nr)).backgroundColor;
+
+    if (color === "rgb(255, 255, 255)") return true;
+    return false;
+}
+
+// Testowanie obiektu w konfiguracji, na pozycji, oparte o tablice
+function testujObiekt(obiekt, pole) {
+
+    let c = pole % 7;
+    let r = (pole - c) / 7;
+    let kostka, x, y;
+    let ok = true;
+
+    const kostki = Shapes[obiekt.index].rotations[obiekt.konfig];
+
+    for (let i = 0; i < kostki.length; i++) {
+        kostka = kostki[i];
+        x = c + kostka[1];
+        y = r + kostka[0];
+        // poza obrazem lub nie biale pole
+        if ( x < 0 || y < 0 || x > 6 || y > 7 || ! testujPole(x + y * 7)) {
+            ok = false;
+            break;
+        }
+    }
+    return ok;
+}
+
+function includes(lista, uklad) {
+    let jest = false;
+
+    for (const e of lista)
+        if (e.pole === uklad.pole && e.index === uklad.index && e.konfig === uklad.konfig) jest = true;
+
+    return jest;
+}
+
+function wyczysc(lista, pole) {
+
+    for (let i = lista.length - 1; i >= 0 ; i--) {
+        const e = lista[i];
+        if (e.pole >= pole)
+            lista.pop();
+        else
+            break;
+    }
+}
+
+function cofnijRuch(ustawione, obiekty) {
+    let back = ustawione.shift();
+
+    // usun klocki
+    board.querySelectorAll(`.${back.nazwa}`).forEach(klocek =>
+        klocek.classList.remove(back.nazwa)
+    );
+    back.konfig = (back.konfig + 1) % Shapes[back.index].rotations.length;
+    //przechowaj pozycje - 1
+    const pole = back.pole - 1;
+    // wymaz element i przenies do obiektow
+    back.pole = undefined;
+    obiekty.push(back);
+    // zwruc pozycje
+    return pole;
+}
+
+// Funkcja obsadza figury na planszy
+function setShapeOnBoard() {
+    // metoda silowa, proba osadzenia kazdego ksztaltu w kazdej konfiguracji na kolejnych miejscach
+    // tablica obiektow do osadzenia, numer ob, konfiguracja, nazwa
+    let obiekty = Array(Shapes.length);
+    ustawione = Array(0);
+    let taKonf = true;
+    let cont = 0;
+    let lista = Array(0);
+    let uklad = {};
+    let back = {};
+    let alicznik = 0;
+    let wynik = true;
+
+    for (let i = 0; i < Shapes.length; i++)
+        obiekty[i] = { "index" : i, "konfig" : 0, "nazwa" : Shapes[i].name };
+
+    // petla przechodzaca kolejne puste pola
+    let pole = 0;
+    do {    // pentla pustych pul
+        if (testujPole(pole)) {
+            cont = 0; taKonf = true;   // licznik obiektow do ustawienia
+            do {    // pentla nieurzytych klockow
+                while (! testujObiekt(obiekty[0], pole)) {  // pentla konfiguracji
+                    obiekty[0].konfig ++;
+                    if (obiekty[0].konfig >= Shapes[obiekty[0].index].rotations.length) {
+                        taKonf = false; break; }
+                }
+                if (taKonf) {   // jesli pasuje to czy juz byla
+                    uklad = {"pole" : pole, "index" : obiekty[0].index, "konfig" : obiekty[0].konfig};
+                    if ( includes( lista, uklad ) ) cont = 20;
+                    else lista.push(uklad);
+                    rysujShape(obiekty[0], pole);
+                    alicznik++;
+                    // if (alicznik % 100 === 0 && alicznik > 1) console.log(alicznik);
+                    // if (alicznik === 552) debugger;
+                    back = obiekty.shift();
+                    back.pole = pole;
+                    ustawione.unshift(back);
+                    break;  // narysowana, wyjdz z petli klockow !
+                } else {    // nie pasuje, przestawienie figur( zerowana konfig i na koniec)
+                    cont++;
+                    taKonf = true;
+                    obiekty[0].konfig = 0;
+                    obiekty.push(obiekty.shift());
+                }
+            } while (cont < obiekty.length);
+
+            if (obiekty.length === 0)
+                // { console.log("Koniec, jest uklad", alicznik); break;}
+                { wynik = true; break;}
+
+            if (cont >= obiekty.length) {   // cofnac, nie znaleziono zadnego ukladu
+                if ( ustawione.length < 1 ) // nie ma co wycofac, wynik albo nie ma
+                    // { console.log("Koniec, nie ma kombinacji", alicznik); wynik = false; break;}
+                    { wynik = false; break;}
+                pole = cofnijRuch(ustawione, obiekty)
+                // cofnij kolejny
+                if (cont === 20) {
+                    // posciagac z listy te pola
+                    wyczysc(lista, pole +1);
+                    if ( ustawione.length < 1 ) // nie ma co wycofac, wynik albo nie ma
+                        // { console.log("Koniec, nie ma kombinacji", alicznik); wynik = false; break;}
+                        { wynik = false; break;}
+                    pole = cofnijRuch(ustawione, obiekty)
+                }
+            }
+        }
+        pole ++;
+        // if (obiekty.length < 2 && testujPole(pole)) debugger;
+    } while (pole < 54 || obiekty.length === 0);
+    return wynik;
+}
+
+
+// 4  Modals
 function showModal(message, callback, singleButton = false) {
     msg.textContent = message;
     modal.classList.remove('modal-hidden');
@@ -181,12 +336,16 @@ function showModal(message, callback, singleButton = false) {
     }
 }
 
-// Przycisk test
+//5 Przyciski
 document.getElementById('test').onclick = function() {
-    showModal("Czy chcesz wykonać akcję dla Przycisku 1?", function(result) {
+    showModal("Czy chcesz sprawdzic dzisiejszy uklad?", function(result) {
         if(result) {
-            console.log("Użytkownik wybrał YES dla Przycisku 1");
-            // tutaj możesz dodać własną akcję
+            console.log("Użytkownik wybrał YES");
+            setShapeOnBoard();
+            nazwyShapes.forEach(nazwa => zmazShape(nazwa));
+            document.getElementById("komunikat").innerText = "Today's Arrangement Exists!"
+            console.log(ustawione);
+            
         } else {
             console.log("Użytkownik wybrał NO dla Przycisku 1");
             // tutaj możesz dodać własną akcję
