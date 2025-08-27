@@ -333,7 +333,7 @@ function setShapeOnBoard() {
 
 // 4  Modals
 function showModal(message, callback, singleButton = false) {
-    msg.textContent = message;
+    msg.innerHTML = message;
     modal.classList.remove('modal-hidden');
     board.classList.add('modal-blur');
 
@@ -409,7 +409,7 @@ btnLeft.onclick = function () {
 
 btnRight.onclick = function () {
     if (ustawione.length) {
-        showModal("Are you sure you want to see the entire solution?\nYou will spoil the fun of working independently.", function(result) {
+        showModal(`Are you sure you want to see the entire solution?<br><b>You will spoil the fun of working independently.</b>`, function(result) {
             if(result) {
                 while (ustawione.length) {
                     let o = ustawione.pop();

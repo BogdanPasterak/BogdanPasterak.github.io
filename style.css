@@ -128,14 +128,15 @@ h1, h2 {
     flex-wrap: wrap;
 }
 
-.buttons-container button {
+button {
     flex: 1 1 25%;
     min-width: 155px;
     max-width: 25%;
     box-sizing: border-box;
+
 }
 
-.buttons-container button:disabled {
+button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -250,7 +251,7 @@ h1, h2 {
         flex-direction: column;
         align-items: stretch;
     }
-    .buttons-container button {
+    button {
         max-width: 100%;
         width: 100%;
     }
@@ -293,8 +294,7 @@ h1, h2 {
 }
 
 /* Stylowanie przycisków w .buttons-container i w modalu */
-.buttons-container button,
-.modal-buttons button {
+button {
     padding: 10px 28px;
     font-size: 1.1em;
     border-radius: 8px;
@@ -305,17 +305,15 @@ h1, h2 {
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
-    margin: 0 5px;
+    margin: 3px;
 }
 
-.buttons-container button:hover:not(:disabled),
-.modal-buttons button:hover:not(:disabled) {
+button:hover:not(:disabled){
     background: linear-gradient(90deg, #38c6ff 0%, #4f8cff 100%);
     transform: scale(1.05);
 }
 
-.buttons-container button:disabled,
-.modal-buttons button:disabled {
+button:disabled {
     background: #cccccc;
     color: #888;
     cursor: not-allowed;
