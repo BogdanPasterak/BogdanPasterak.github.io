@@ -396,8 +396,9 @@ btnLeft.onclick = function () {
             if(result) {
                 let o = ustawione.pop();
                 rysujShape(o, o.pole);
-            } else {
-                console.log("Wybrano NO");
+                if (!(ustawione.length)) {
+                    // guzik test -> inne wyzwania
+                }
             }
         });
     } else {
@@ -408,7 +409,15 @@ btnLeft.onclick = function () {
 
 btnRight.onclick = function () {
     if (ustawione.length) {
-
+        showModal("Are you sure you want to see the entire solution?\nYou will spoil the fun of working independently.", function(result) {
+            if(result) {
+                while (ustawione.length) {
+                    let o = ustawione.pop();
+                    rysujShape(o, o.pole);
+                }
+                // guzik test -> inne wyzwania
+            }
+        });
     } else {
         clearDay();
         setWyzwanie(nrWyz + 1);
