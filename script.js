@@ -90,6 +90,7 @@ function generatePlansza() {
 // 2. Obsluga ustawiania dnia na planszy
 // ustawienie dzisiaj
 function setToday() {
+    clearDay();
     const dzis = new Date();
     setDay(dzis.getDate());
     setMonth(dzis.getMonth());
@@ -149,7 +150,8 @@ function sprawdzDate() {
 
     // ustaw dzien tygodnia
     if (document.querySelectorAll('.wday').length > 0) {
-        document.querySelector(".week").classList.remove("week");
+        if (document.querySelectorAll('.week').length > 0)
+            document.querySelector(".week").classList.remove("week");
         document.querySelectorAll('.wday')[realDate.week].classList.add("week");
     }
 
@@ -157,19 +159,22 @@ function sprawdzDate() {
 
 // popraw dzien
 function setDay(nr) {
-    document.querySelector(".today.day").classList.remove("today");
+    if (document.querySelectorAll('.today.day').length > 0)
+        document.querySelector(".today.day").classList.remove("today");
     document.querySelectorAll(".day")[--nr].classList.add("today");
 }
 
 // popraw miesiac
 function setMonth(nr) {
-    document.querySelector(".today.month").classList.remove("today");
+    if (document.querySelectorAll('.today.month').length > 0)
+        document.querySelector(".today.month").classList.remove("today");
     document.querySelectorAll(".month")[nr].classList.add("today");
 }
 
 // popraw rok
 function setYear(nr) {
-    document.querySelector(".today.year").classList.remove("today");
+    if (document.querySelectorAll('.today.year').length > 0)
+        document.querySelector(".today.year").classList.remove("today");
     document.querySelectorAll('.year')[nr - 2025].classList.add("today");
 }
 
@@ -366,66 +371,105 @@ function showModal(message, callback, singleButton = false) {
 
 //5 Przyciski
 btnTest.onclick = function() {
-    // showModal("Czy chcesz sprawdzic dzisiejszy uklad?", function(result) {
-    if(setShapeOnBoard()) {
-        // ukryj jak sa , zapisane w ustawione
-        nazwyShapes.forEach(nazwa => zmazShape(nazwa));
-        komunikat.innerText = "Today's Arrangement Exists!"
-        flashTransmisja();
-        btnTest.setAttribute('disabled', 'disabled');
-        btnLeft.removeAttribute('disabled');
-        btnLeft.textContent = "Show one";
-        btnRight.removeAttribute('disabled');
-        btnRight.textContent = "Show all";
-        // console.log(ustawione);
-    } else {
-        komunikat.innerText = "Today's arrangements are non-existent, try another challenge."
-        flashTransmisja();
-        btnTest.textContent = "Test";
-        btnLeft.removeAttribute('disabled');
-        btnRight.removeAttribute('disabled');
-        clearDay();
-        setWyzwanie(nrWyz);
+    if (btnTest.textContent.startsWith("Test")) {
+        if(setShapeOnBoard()) {
+            // ukryj jak sa , zapisane w ustawione
+            nazwyShapes.forEach(nazwa => zmazShape(nazwa));
+            komunikat.innerText = "This Arrangement Exists!"
+            flashTransmisja();
+            btnTest.setAttribute('disabled', 'disabled');
+            btnLeft.removeAttribute('disabled');
+            btnLeft.textContent = "Show one";
+            btnRight.removeAttribute('disabled');
+            btnRight.textContent = "Show all";
+            // console.log(ustawione);
+        } else {
+            komunikat.innerText = "Today's arrangements are non-existent, try another challenge."
+            flashTransmisja();
+            challenge();
+        }
+    } else if (btnTest.textContent === "Clear") {
+        showModal("Clean this arrangement?", function(result) {
+            if(result) {
+                nazwyShapes.forEach(nazwa => zmazShape(nazwa));
+                setToday();
+                btnTest.textContent = "Test Today";
+                btnLeft.textContent = "Challenge";
+                btnRight.textContent = "Random";
+                btnLeft.removeAttribute('disabled');
+                btnRight.removeAttribute('disabled');
+            } 
+        });        
     }
-    // });
 };
 
 btnLeft.onclick = function () {
-    if (ustawione.length) {
+    if (btnLeft.textContent === "Challenge") {
+        challenge();
+    } else if (ustawione.length) {
         showModal("Are you sure you want to see the hint?", function(result) {
             if(result) {
                 let o = ustawione.pop();
                 rysujShape(o, o.pole);
                 if (!(ustawione.length)) {
-                    // guzik test -> inne wyzwania
+                    pelnaPlansza();
                 }
             }
         });
-    } else {
+    } else if (btnLeft.textContent === "<--"){
         clearDay();
         setWyzwanie(nrWyz - 1);
     }
 }
 
 btnRight.onclick = function () {
-    if (ustawione.length) {
+    if (btnLeft.textContent === "Random") {
+        randomSet();
+    } else if (ustawione.length) {
         showModal(`Are you sure you want to see the entire solution?<br><b>You will spoil the fun of working independently.</b>`, function(result) {
             if(result) {
                 while (ustawione.length) {
                     let o = ustawione.pop();
                     rysujShape(o, o.pole);
                 }
-                // guzik test -> inne wyzwania
+                pelnaPlansza();
             }
         });
-    } else {
+    } else if (btnRight.textContent === "-->") {
         clearDay();
         setWyzwanie(nrWyz + 1);
     }
 }
 
+function challenge() {
+    // console.log("Challenge");
+    btnTest.removeAttribute('disabled');
+    btnTest.textContent = "Test";
+    btnLeft.removeAttribute('disabled');
+    btnRight.removeAttribute('disabled');
+    btnLeft.textContent = "<--";
+    btnRight.textContent = "-->";
+    clearDay();
+    setWyzwanie(nrWyz);
+}
+function randomSet() {
+    // ustal losowe
+    console.log("Random");
+    
+}
+
+function pelnaPlansza() {
+    btnTest.removeAttribute('disabled');
+    btnTest.textContent = "Clear";
+    btnLeft.setAttribute('disabled', 'disabled');
+    btnRight.setAttribute('disabled', 'disabled');
+    btnLeft.textContent = "<--";
+    btnRight.textContent = "-->";
+
+}
+
 // do testow dzien bez ukladu Oct 30 Thu
-document.querySelector("footer").onclick = function () {
+document.querySelector("footer .test").onclick = function () {
     let dzien = new Date( 2025, 0, 303)
     setDay(dzien.getDate());
     setMonth(dzien.getMonth());
