@@ -125,6 +125,14 @@ h1, h2 {
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.buttons-container button {
+    flex: 1 1 25%;
+    min-width: 155px;
+    max-width: 25%;
+    box-sizing: border-box;
 }
 
 .buttons-container button:disabled {
@@ -236,6 +244,18 @@ h1, h2 {
     }
 }
 
+/* Jeśli jest ciasno, układaj przyciski w pionie */
+@media (max-width: 500px) {
+    .buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .buttons-container button {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
 /* Modal - początkowo ukryty */
 .modal-hidden {
     display: none !important;
@@ -315,3 +335,4 @@ h1, h2 {
     66%  { color: white; }
     100% { color: inherit; }
 }
+

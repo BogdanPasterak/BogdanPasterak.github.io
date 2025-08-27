@@ -6,10 +6,16 @@ const modal = document.getElementById('modal');
 const msg = document.getElementById('modal-message');
 const yesBtn = document.getElementById('modal-yes');
 const noBtn = document.getElementById('modal-no');
+const komunikat =  document.getElementById("komunikat");
+const zaznaczanie = document.getElementById('zaznaczanie');
+const btnTest = document.getElementById('test');
+const btnLeft = document.getElementById('left');
+const btnRight = document.getElementById('right');
 
 // zmienne
 let nazwyShapes = [];
 let ustawione = Array(0);
+let nrWyz = 0;
 
 // texty na polach
 const opis = [
@@ -21,6 +27,9 @@ const opis = [
     "Sun", "Mon", "Tue", "Wed",
     "2027" ,"2028" ,"2029" ,"2030", "Thu", "Fri", "Sat"
 ];
+const wyzwania = [
+    ["Thu", "Fri", "Sat"], ["7", "14", "21"], ["Jan", "Feb", "Mar"], ["Jan", "Jul", "1"]
+]
 // miesiace i dni tygodnia
 const mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dwe = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -74,6 +83,8 @@ function generatePlansza() {
 
     Shapes.forEach(e => nazwyShapes.push(e.name));
     setToday();
+    btnLeft.setAttribute('disabled', 'disabled');
+    btnRight.setAttribute('disabled', 'disabled');
 }
 
 // 2. Obsluga ustawiania dnia na planszy
@@ -84,6 +95,23 @@ function setToday() {
     setMonth(dzis.getMonth());
     setYear(dzis.getFullYear());
     sprawdzDate();
+}
+
+function clearDay() {
+    if (document.querySelector(".week"))
+        document.querySelector(".week").classList.remove("week");
+    document.querySelectorAll(".today").forEach(d => d.classList.remove("today"));
+
+}
+
+function setWyzwanie(nr) {
+
+    nrWyz = (nr === -1) ? wyzwania.length - 1 : nr % wyzwania.length;
+    wyzwania[nrWyz].forEach(txt => 
+            Array.from(document.querySelectorAll('.cell'))
+            .filter(el => el.textContent.trim() === txt)[0]
+            .classList.add("today")
+    );
 }
 
 // pobierz dzien tygodnia
@@ -257,8 +285,8 @@ function setShapeOnBoard() {
                         taKonf = false; break; }
                 }
                 if (taKonf) {   // jesli pasuje to czy juz byla
-                    uklad = {"pole" : pole, "index" : obiekty[0].index, "konfig" : obiekty[0].konfig};
-                    if ( includes( lista, uklad ) ) cont = 20;
+                    uklad = {"index" : obiekty[0].index, "konfig" : obiekty[0].konfig, "nazwa" : obiekty[0].nazwa, "pole" : pole};
+                    if ( includes( lista, uklad ) ) cont = 20;  // juz byl
                     else lista.push(uklad);
                     rysujShape(obiekty[0], pole);
                     alicznik++;
@@ -337,25 +365,66 @@ function showModal(message, callback, singleButton = false) {
 }
 
 //5 Przyciski
-document.getElementById('test').onclick = function() {
-    showModal("Czy chcesz sprawdzic dzisiejszy uklad?", function(result) {
-        if(result) {
-            console.log("Użytkownik wybrał YES");
-            setShapeOnBoard();
-            nazwyShapes.forEach(nazwa => zmazShape(nazwa));
-            document.getElementById("komunikat").innerText = "Today's Arrangement Exists!"
-            console.log(ustawione);
-            flashTransmisja();
-        } else {
-            console.log("Użytkownik wybrał NO dla Przycisku 1");
-            // tutaj możesz dodać własną akcję
-        }
-    });
+btnTest.onclick = function() {
+    // showModal("Czy chcesz sprawdzic dzisiejszy uklad?", function(result) {
+    if(setShapeOnBoard()) {
+        // ukryj jak sa , zapisane w ustawione
+        nazwyShapes.forEach(nazwa => zmazShape(nazwa));
+        komunikat.innerText = "Today's Arrangement Exists!"
+        flashTransmisja();
+        btnTest.setAttribute('disabled', 'disabled');
+        btnLeft.removeAttribute('disabled');
+        btnLeft.textContent = "Show one";
+        btnRight.removeAttribute('disabled');
+        btnRight.textContent = "Show all";
+        // console.log(ustawione);
+    } else {
+        komunikat.innerText = "Today's arrangements are non-existent, try another challenge."
+        flashTransmisja();
+        btnTest.textContent = "Test";
+        btnLeft.removeAttribute('disabled');
+        btnRight.removeAttribute('disabled');
+        clearDay();
+        setWyzwanie(nrWyz);
+    }
+    // });
 };
 
+btnLeft.onclick = function () {
+    if (ustawione.length) {
+        showModal("Are you sure you want to see the hint?", function(result) {
+            if(result) {
+                let o = ustawione.pop();
+                rysujShape(o, o.pole);
+            } else {
+                console.log("Wybrano NO");
+            }
+        });
+    } else {
+        clearDay();
+        setWyzwanie(nrWyz - 1);
+    }
+}
+
+btnRight.onclick = function () {
+    if (ustawione.length) {
+
+    } else {
+        clearDay();
+        setWyzwanie(nrWyz + 1);
+    }
+}
+
+document.querySelector("footer").onclick = function () {
+    console.log("Oct 30 Thu");
+        let dzien = new Date( 2025, 0, 303)
+        setDay(dzien.getDate());
+        setMonth(dzien.getMonth());
+        setYear(dzien.getFullYear());
+        sprawdzDate();
+}
+
 function flashTransmisja() {
-    const zaznaczanie = document.getElementById('zaznaczanie');
-    const komunikat = document.getElementById('komunikat');
     zaznaczanie.classList.add('flash');
     komunikat.classList.add('flash');
     setTimeout(() => {
