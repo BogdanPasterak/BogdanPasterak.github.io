@@ -27,9 +27,16 @@ header {
 
 footer {
     text-align: center;
+    align-items: center;
+    justify-content: center;
     padding: 15px;
+    display: block;
 }
 
+.linia {
+    white-space: nowrap;
+    display: inline;
+}
 h1, .sidebar h1 {
     font-size: clamp(1.5em, 5vw, 2.5em);
     margin: 10px 10px 0;
@@ -78,7 +85,6 @@ h1, h2 {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-left: 40px;
     text-align: center;
     min-width: 300px;
     order: 2;
@@ -124,7 +130,6 @@ h1, h2 {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 20px;
     flex-wrap: wrap;
 }
 
@@ -189,6 +194,8 @@ button:disabled {
         background-color: #f0f0f0;
         border: 2px solid #333;
         order: 1; /* Główna sekcja po lewej */
+        margin-right: 30px;
+
     }
 
     header {
@@ -208,9 +215,6 @@ button:disabled {
 
     footer {
         flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         order: 3;
     }
 }

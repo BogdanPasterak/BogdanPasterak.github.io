@@ -424,13 +424,13 @@ btnRight.onclick = function () {
     }
 }
 
+// do testow dzien bez ukladu Oct 30 Thu
 document.querySelector("footer").onclick = function () {
-    console.log("Oct 30 Thu");
-        let dzien = new Date( 2025, 0, 303)
-        setDay(dzien.getDate());
-        setMonth(dzien.getMonth());
-        setYear(dzien.getFullYear());
-        sprawdzDate();
+    let dzien = new Date( 2025, 0, 303)
+    setDay(dzien.getDate());
+    setMonth(dzien.getMonth());
+    setYear(dzien.getFullYear());
+    sprawdzDate();
 }
 
 function flashTransmisja() {
@@ -441,18 +441,6 @@ function flashTransmisja() {
         komunikat.classList.remove('flash');
     }, 3000);
 }
-
-// Przykład użycia:
-// flashTransmisja();
-
-// Przykład użycia:
-// showModal("Czy chcesz kontynuować?", function(result) {
-//     if(result) {
-//         console.log("Wybrano YES");
-//     } else {
-//         console.log("Wybrano NO");
-//     }
-// });
 
 
 // START
