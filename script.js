@@ -423,7 +423,7 @@ btnLeft.onclick = function () {
 }
 
 btnRight.onclick = function () {
-    if (btnLeft.textContent === "Random") {
+    if (btnRight.textContent === "Random") {
         randomSet();
     } else if (ustawione.length) {
         showModal(`Are you sure you want to see the entire solution?<br><b>You will spoil the fun of working independently.</b>`, function(result) {
