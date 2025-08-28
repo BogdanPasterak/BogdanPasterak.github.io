@@ -393,9 +393,9 @@ btnTest.onclick = function() {
             if(result) {
                 nazwyShapes.forEach(nazwa => zmazShape(nazwa));
                 setToday();
-                btnTest.textContent = "Test Today";
+                btnTest.textContent = "Test";
                 btnLeft.textContent = "Challenge";
-                btnRight.textContent = "Random";
+                btnRight.textContent = "Past";
                 btnLeft.removeAttribute('disabled');
                 btnRight.removeAttribute('disabled');
             } 
@@ -423,7 +423,7 @@ btnLeft.onclick = function () {
 }
 
 btnRight.onclick = function () {
-    if (btnRight.textContent === "Random") {
+    if (btnRight.textContent === "Past") {
         randomSet();
     } else if (ustawione.length) {
         showModal(`Are you sure you want to see the entire solution?<br><b>You will spoil the fun of working independently.</b>`, function(result) {
@@ -454,8 +454,14 @@ function challenge() {
 }
 function randomSet() {
     // ustal losowe
-    console.log("Random");
-    
+    const start = new Date(2025,0,1);
+    let d = Math.floor(((new Date() - start) / 86400000) * Math.random()) - 1;
+    d = new Date(2025, 0, 1 + d);
+    clearDay();
+    setDay(d.getDate());
+    setMonth(d.getMonth());
+    setYear(d.getFullYear());
+    sprawdzDate();
 }
 
 function pelnaPlansza() {
@@ -465,7 +471,6 @@ function pelnaPlansza() {
     btnRight.setAttribute('disabled', 'disabled');
     btnLeft.textContent = "<--";
     btnRight.textContent = "-->";
-
 }
 
 // do testow dzien bez ukladu Oct 30 Thu
